@@ -3,11 +3,21 @@ package io.javabrains.springbootstarter.topic;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class TopicService {
+	
+	@Autowired
+	private TopicRepository topicRepository;
+	
 	
 	private List<Topic> topics = new ArrayList<>();
 
 	public List<Topic> getTopics() {
+		List<Topic> topics = new ArrayList<>();
+		topicRepository.findAll()
+		.forEach(topics::add);
+		
 		return topics;
 	}
 
@@ -17,14 +27,11 @@ public class TopicService {
 	}
 	
 	public void addTopic(Topic topic) {
-		topics.add(topic);
+		topicRepository.save(topic);
 	}
 	
 	public void addTopics(List<Topic> topics) {
-		
-		for(Topic newTopic : topics) {
-			this.topics.add(newTopic);
-		}
+		topicRepository.saveAll(topics);
 	}
 	
 	public void updateTopic(Topic topic, String id) {

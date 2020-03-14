@@ -2,16 +2,16 @@ package io.javabrains.springbootstarter.topic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TopicService {
 	
 	@Autowired
 	private TopicRepository topicRepository;
-	
-	
-	private List<Topic> topics = new ArrayList<>();
 
 	public List<Topic> getTopics() {
 		List<Topic> topics = new ArrayList<>();
@@ -21,9 +21,9 @@ public class TopicService {
 		return topics;
 	}
 
-	public Topic getTopic(String id) {
+	public Optional<Topic> getTopic(String id) {
 		
-		return topics.stream().filter(t -> t.getTopicId().equals(id)).findFirst().get();
+		return topicRepository.findById(id);
 	}
 	
 	public void addTopic(Topic topic) {
@@ -35,25 +35,14 @@ public class TopicService {
 	}
 	
 	public void updateTopic(Topic topic, String id) {
-		
-		int index = 0;
-		for(Topic currentTopic : topics) {
-			if(currentTopic.getTopicId().equals(id)) {
-				topics.set(index, topic);
-			}
-			index++;
-		}
+		topicRepository.save(topic);
 	}
 	
-	public Topic deleteTopic(String id) {
+	public Optional<Topic> deleteTopic(String id) {
 		
-		for(Topic currentTopic : topics) {
-			if(currentTopic.getTopicId().equals(id)) {
-				topics.remove(currentTopic);
-				return currentTopic;
-			}
-		}
-		return new Topic();
+		Optional<Topic> topic = topicRepository.findById(id);
+		topicRepository.deleteById(id);
+		return topic;
 	}
 
 }
